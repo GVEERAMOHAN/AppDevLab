@@ -12,8 +12,7 @@ def login():
     name1=request.form['Username']
     pwd=request.form['Password']
     if name1 not in database:
-        return render_template('login.html',info='Inavlid Use
-r')
+        return render_template('login.html',info='Inavlid User')
     else:
         if database[name1]!=pwd:
             return render_template('login.html',info='Invalid password')
@@ -25,4 +24,33 @@ if __name__=='__main__':
 
 login.html
 
-<!
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DOCUMENT/title>
+</head>
+<body bgcolor="orange">
+    <form action = "/for_login" method="post">
+        <h2></h2>Username: <br>
+        <input type="text" name="Username">
+        <br>
+        <input type="Submit" value="login">
+    </form>
+    <h1>{{info}}</h1>
+</body>
+</html>
+
+
+home.html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+</head>
+<body bgcolor="teal">
+    <h1 align ="center">
+        Welcome {{name}}
+    </h1>
+</body>
+</html>
