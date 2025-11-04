@@ -32,7 +32,6 @@ order.html
   </style>
 </head>
 <body>
-<body>
   <nav class="navbar bg-light navbar-expand-lg">
     <div class="container-fluid">
       <a class="navbar-brand text-success fw-bold" href="#">CMR Institute of Technology</a>
