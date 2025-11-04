@@ -1,25 +1,29 @@
 # Week-11: Develop a web app with login and welcome pages, validate the user details on submission and navigate to the welcome page
 
 app.py
-from flask import Flask,request,render_template
-app=Flask(__name__)
+
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+users = {'cmrit': '123', 'mallreddy': 'abc', 'hyd': 'abc'}
+
 @app.route('/')
-def hello_world():
+def login_page():
     return render_template('login.html')
-database={'cmrit':'123','mallreddy':'abc','hyd':'abc'}
-@app.route('/form_login',methods=['POST','GET'])
+
+@app.route('/login', methods=['POST'])
 def login():
-    name1=request.form['Username']
-    pwd=request.form['Password']
-    if name1 not in database:
-        return render_template('login.html',info='Inavlid User')
+    name = request.form.get('username')
+    password = request.form.get('password')
+    if name not in users:
+        return render_template('login.html', info='Invalid Username')
+    elif users[name] != password:
+        return render_template('login.html', info='Invalid Password')
     else:
-        if database[name1]!=pwd:
-            return render_template('login.html',info='Invalid password')
-        else:
-            return render_template('home.html',name=name1)
-if __name__=='__main__':
-    app.run()
+        return render_template('home.html', name=name)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 login.html
@@ -27,16 +31,19 @@ login.html
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DOCUMENT/title>
+  <title>Login Page</title>
 </head>
-<body bgcolor="orange">
-    <form action = "/for_login" method="post">
-        <h2></h2>Username: <br>
-        <input type="text" name="Username">
-        <br>
-        <input type="Submit" value="login">
-    </form>
-    <h1>{{info}}</h1>
+<body style="background-color: orange;">
+  <form action="/login" method="post">
+    <h2>Login</h2>
+    Username: <br>
+    <input type="text" name="username" required><br><br>
+    Password: <br>
+    <input type="password" name="password" required><br><br>
+    <input type="submit" value="Login">
+  </form>
+
+  <h3 style="color:red;">{{info}}</h3>
 </body>
 </html>
 
@@ -46,11 +53,9 @@ home.html
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome</title>
+  <title>Welcome</title>
 </head>
-<body bgcolor="teal">
-    <h1 align ="center">
-        Welcome {{name}}
-    </h1>
+<body style="background-color: teal;">
+  <h1 style="text-align: center;">Welcome {{name}}</h1>
 </body>
 </html>
