@@ -2,30 +2,33 @@
 
 app.py
 
-from flask import Flask, request, render_template
+from flask import Flask, render_template, request
+
 app = Flask(__name__)
-def load_questions():
-    questions = {}
-    with open('python_questions.txt', 'r') as file:
-        lines = file.readlines()
-        for line in lines:
-            question, answer = line.strip().split('|||')
-            questions[question.strip()] = answer.strip()
-    return questions
-python_questions = load_questions()
+
+# Load questions from text file
+def load_qna():
+    qna = {}
+    with open('python_questions.txt') as f:
+        for line in f:
+            q, a = line.strip().split('|||')
+            qna[q.strip()] = a.strip()
+    return qna
+
+questions = load_qna()
+
 @app.route('/')
-def chatbot_page():
+def home():
     return render_template('chatbot.html')
+
 @app.route('/ask', methods=['POST'])
-def answer_question():
-    user_question = request.form.get('user_question')
-    if user_question in python_questions:
-        answer = python_questions[user_question]
-    else:
-        answer = "Sorry, I don't know the answer to that question."
-    return render_template('chatbot.html', user_question=user_question, answer=answer)
+def ask():
+    user_q = request.form['user_question']
+    answer = questions.get(user_q, "Sorry, I don't know the answer to that question.")
+    return render_template('chatbot.html', user_question=user_q, answer=answer)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
 
 
 chatbot.html
@@ -33,26 +36,27 @@ chatbot.html
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Python Chatbot</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Python Chatbot</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 </head>
-<body>
-    <div class="container mt-5">
-        <h1>Python Chatbot</h1>
-        <form method="POST" action="/ask">
-            <div class="form-group">
-                <label for="user_question">Ask a Python question:</label>
-                <input type="text" class="form-control" id="user_question" name="user_question" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-        {% if user_question %}
+<body class="bg-light">
+  <div class="container mt-5">
+    <h1 style="color: black;">Python Chatbot</h1>
+    <form method="POST" action="/ask">
+      <p style="font-weight: bold;">Ask a Python question:</p>  
+      <input type="text" class="form-control mb-3" name="user_question" required>
+      <button style="color: black;" >Submit</button>
+    </form>
+    <br>
+    {% if user_question %}
+      <div>
         <h3>Your Question:</h3>
         <p>{{ user_question }}</p>
         <h3>Answer:</h3>
         <p>{{ answer }}</p>
-        {% endif %}
-    </div>
+      </div>
+    {% endif %}
+  </div>
 </body>
 </html>
 
